@@ -48,18 +48,7 @@
                 <i class="fas fa-money-bill-wave"></i>
                 <span>السداد</span>
             </a>
-            <a href="reports.html" class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>التقارير</span>
-            </a>
-            <a href="notifications.html" class="nav-item">
-                <i class="fas fa-bell"></i>
-                <span>التنبيهات</span>
-            </a>
-            <a href="settings.html" class="nav-item ">
-                <i class="fas fa-cog"></i>
-                <span>الإعدادات</span>
-            </a>
+
         </nav>
 
         <a href="{{route('profile')}}" class="user-profile">

@@ -75,6 +75,7 @@
                 <i class="fas fa-user-plus"></i>
                 إنشاء الحساب
             </button>
+            </div>
         </form>
 
         <div class="divider">
