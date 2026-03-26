@@ -25,45 +25,54 @@
             <span id="errorText">البريد الإلكتروني أو كلمة المرور غير صحيحة</span>
         </div>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="example@debtmate.com"
-                        required>
-                </div>
-            </div>
+<form method="POST" action="{{ route('login') }}">
+    @csrf
 
-            <div class="form-group">
-                <label for="password">كلمة المرور</label>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••"
-                        required>
-                </div>
-            </div>
+    @if ($errors->any())
+        <div class="error-message" style="display:block">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ $errors->first() }}</span>
+        </div>
+    @endif
 
-            <div class="form-options">
-                <label class="remember-me">
-                    <input type="checkbox" name="remember" id="remember">
-                    <span>تذكرني</span>
-                </label>
-                <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
-            </div>
+    <div class="form-group">
+        <label for="email">البريد الإلكتروني</label>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email"
+                   class="form-control" value="{{ old('email') }}" required>
+        </div>
+    </div>
 
-            <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i>
-                تسجيل الدخول
-            </button>
-        </form>
+    <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password"
+                   class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-options">
+        <label class="remember-me">
+            <input type="checkbox" name="remember" id="remember">
+            <span>تذكرني</span>
+        </label>
+        {{-- <a href="#" class="forgot-password">نسيت كلمة المرور؟</a> --}}
+    </div>
+
+    <button type="submit" class="btn-login">
+        <i class="fas fa-sign-in-alt"></i>
+        تسجيل الدخول
+    </button>
+</form>
 
         <div class="divider">
             <span>أو</span>
         </div>
 
         <div class="signup-link">
-            ليس لديك حساب؟ <a href="register.html">إنشاء حساب جديد</a>
+            ليس لديك حساب؟ <a href="{{ route('register') }}">إنشاء حساب جديد</a>
         </div>
     </div>
 

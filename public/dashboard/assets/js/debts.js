@@ -5,58 +5,49 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📋 Debts Page Loaded');
-    
+
     // تفعيل جميع الوظائف
     initModal();
     initFilters();
     initSearch();
     initViewToggle();
-    initDebtActions();
+    // initDebtActions();
 });
 
 // ============================================
 // 1. Modal - نافذة إضافة دين
 // ============================================
 function initModal() {
-    const modal = document.getElementById('addDebtModal');
-    const addBtn = document.getElementById('addDebtBtn');
+    const modal    = document.getElementById('addDebtModal');
+    const addBtn   = document.getElementById('addDebtBtn');
     const closeBtn = document.getElementById('closeModal');
     const cancelBtn = document.getElementById('cancelBtn');
-    const form = document.getElementById('addDebtForm');
-    
+
     // فتح Modal
     if (addBtn) {
         addBtn.addEventListener('click', function() {
+            modal.style.display = 'flex';
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
     }
-    
+
     // إغلاق Modal
     function closeModal() {
+        modal.style.display = 'none';
         modal.classList.remove('active');
         document.body.style.overflow = '';
-        form.reset();
     }
-    
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-    
+
     // إغلاق عند الضغط خارج المحتوى
     modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
+        if (e.target === modal) closeModal();
     });
-    
-    // معالجة إرسال النموذج
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handleAddDebt(new FormData(form));
-            closeModal();
-        });
-    }
+
+    // *** مش بنعمل preventDefault — بنسيب الـ form يبعت للـ Laravel عادي ***
 }
 
 function handleAddDebt(formData) {
@@ -69,30 +60,30 @@ function handleAddDebt(formData) {
         notes: formData.get('notes'),
         recurring: formData.get('recurring') === 'on'
     };
-    
+
     console.log('📝 Adding new debt:', debtData);
-    
+
     // هنا يمكن إرسال البيانات للسيرفر
     // await fetch('/api/debts', { method: 'POST', body: JSON.stringify(debtData) });
-    
+
     // إظهار رسالة نجاح
     showNotification('تم إضافة الدين بنجاح! 🎉', 'success');
-    
+
     // إضافة البطاقة للصفحة
     addDebtCard(debtData);
-    
+
     // تحديث الإحصائيات
     updateStats();
 }
 
 function addDebtCard(data) {
     const container = document.getElementById('debtsContainer');
-    
+
     const card = document.createElement('div');
     card.className = 'debt-card';
     card.setAttribute('data-status', 'active');
     card.setAttribute('data-category', data.category);
-    
+
     card.innerHTML = `
         <div class="debt-card-header">
             <div class="debt-category ${data.category}">
@@ -143,12 +134,12 @@ function addDebtCard(data) {
             </button>
         </div>
     `;
-    
+
     container.insertBefore(card, container.firstChild);
-    
+
     // تفعيل الأزرار للبطاقة الجديدة
     initCardActions(card);
-    
+
     // تأثير Animation
     card.style.opacity = '0';
     card.style.transform = 'translateY(-20px)';
@@ -178,14 +169,14 @@ function initFilters() {
     const categoryFilter = document.getElementById('categoryFilter');
     const sortFilter = document.getElementById('sortFilter');
     const resetBtn = document.getElementById('resetFilters');
-    
+
     // تطبيق الفلاتر
     [statusFilter, categoryFilter, sortFilter].forEach(filter => {
         if (filter) {
             filter.addEventListener('change', applyFilters);
         }
     });
-    
+
     // إعادة تعيين الفلاتر
     if (resetBtn) {
         resetBtn.addEventListener('click', function() {
@@ -204,24 +195,24 @@ function applyFilters() {
     const category = document.getElementById('categoryFilter').value;
     const sort = document.getElementById('sortFilter').value;
     const search = document.getElementById('searchInput').value.toLowerCase();
-    
+
     const cards = document.querySelectorAll('.debt-card');
     let visibleCount = 0;
-    
+
     cards.forEach(card => {
         const cardStatus = card.getAttribute('data-status');
         const cardCategory = card.getAttribute('data-category');
         const cardTitle = card.querySelector('.debt-title').textContent.toLowerCase();
-        
+
         // فلترة حسب الحالة
         const statusMatch = status === 'all' || cardStatus === status;
-        
+
         // فلترة حسب الفئة
         const categoryMatch = category === 'all' || cardCategory === category;
-        
+
         // فلترة حسب البحث
         const searchMatch = search === '' || cardTitle.includes(search);
-        
+
         // إظهار/إخفاء البطاقة
         if (statusMatch && categoryMatch && searchMatch) {
             card.style.display = '';
@@ -230,10 +221,10 @@ function applyFilters() {
             card.style.display = 'none';
         }
     });
-    
+
     // تحديث عداد النتائج
     updateResultsCount(visibleCount, cards.length);
-    
+
     // تطبيق الترتيب
     sortCards(sort);
 }
@@ -241,7 +232,7 @@ function applyFilters() {
 function sortCards(sortType) {
     const container = document.getElementById('debtsContainer');
     const cards = Array.from(container.querySelectorAll('.debt-card'));
-    
+
     cards.sort((a, b) => {
         switch(sortType) {
             case 'date-desc':
@@ -260,7 +251,7 @@ function sortCards(sortType) {
                 return 0;
         }
     });
-    
+
     // إعادة ترتيب البطاقات
     cards.forEach(card => container.appendChild(card));
 }
@@ -277,13 +268,13 @@ function updateResultsCount(visible, total) {
 // ============================================
 function initSearch() {
     const searchInput = document.getElementById('searchInput');
-    
+
     if (searchInput) {
         // البحث الفوري
         searchInput.addEventListener('input', function() {
             applyFilters();
         });
-        
+
         // مسح البحث بـ Escape
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
@@ -300,15 +291,15 @@ function initSearch() {
 function initViewToggle() {
     const viewButtons = document.querySelectorAll('.view-btn');
     const container = document.getElementById('debtsContainer');
-    
+
     viewButtons.forEach(button => {
         button.addEventListener('click', function() {
             const view = this.getAttribute('data-view');
-            
+
             // تحديث الأزرار النشطة
             viewButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
-            
+
             // تغيير العرض
             if (view === 'grid') {
                 container.classList.remove('list-view');
@@ -317,12 +308,12 @@ function initViewToggle() {
                 container.classList.remove('grid-view');
                 container.classList.add('list-view');
             }
-            
+
             // حفظ التفضيل
             localStorage.setItem('debts-view', view);
         });
     });
-    
+
     // تحميل العرض المحفوظ
     const savedView = localStorage.getItem('debts-view');
     if (savedView === 'list') {
@@ -343,25 +334,25 @@ function initCardActions(card) {
     const editBtn = card.querySelector('.btn-edit');
     const deleteBtn = card.querySelector('.btn-delete');
     const viewBtn = card.querySelector('.btn-view');
-    
+
     if (payBtn) {
         payBtn.addEventListener('click', function() {
             handlePayDebt(card);
         });
     }
-    
+
     if (editBtn) {
         editBtn.addEventListener('click', function() {
             handleEditDebt(card);
         });
     }
-    
+
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
             handleDeleteDebt(card);
         });
     }
-    
+
     if (viewBtn) {
         viewBtn.addEventListener('click', function() {
             handleViewDebt(card);
@@ -372,10 +363,10 @@ function initCardActions(card) {
 function handlePayDebt(card) {
     const title = card.querySelector('.debt-title').textContent;
     const amount = card.querySelector('.amount-value').textContent;
-    
+
     if (confirm(`هل تريد تسجيل دفعة لـ ${title}؟`)) {
         showNotification('جاري فتح صفحة السداد...', 'info');
-        
+
         // الانتقال لصفحة السداد
         setTimeout(() => {
             window.location.href = 'payments.html?debt=' + encodeURIComponent(title);
@@ -385,9 +376,9 @@ function handlePayDebt(card) {
 
 function handleEditDebt(card) {
     const title = card.querySelector('.debt-title').textContent;
-    
+
     showNotification(`فتح نافذة تعديل: ${title}`, 'info');
-    
+
     // يمكن فتح Modal للتعديل
     // const modal = createEditModal(card);
     // document.body.appendChild(modal);
@@ -395,13 +386,13 @@ function handleEditDebt(card) {
 
 function handleDeleteDebt(card) {
     const title = card.querySelector('.debt-title').textContent;
-    
+
     if (confirm(`هل أنت متأكد من حذف "${title}"؟\nهذا الإجراء لا يمكن التراجع عنه.`)) {
         // تأثير الحذف
         card.style.transition = 'all 0.5s ease';
         card.style.opacity = '0';
         card.style.transform = 'translateX(100%)';
-        
+
         setTimeout(() => {
             card.remove();
             showNotification('تم حذف الدين بنجاح', 'success');
@@ -413,9 +404,9 @@ function handleDeleteDebt(card) {
 
 function handleViewDebt(card) {
     const title = card.querySelector('.debt-title').textContent;
-    
+
     showNotification(`عرض تفاصيل: ${title}`, 'info');
-    
+
     // يمكن فتح Modal للعرض
 }
 
@@ -424,19 +415,19 @@ function handleViewDebt(card) {
 // ============================================
 function updateStats() {
     const cards = document.querySelectorAll('.debt-card');
-    
+
     let total = cards.length;
     let active = 0;
     let paid = 0;
     let overdue = 0;
-    
+
     cards.forEach(card => {
         const status = card.getAttribute('data-status');
         if (status === 'active') active++;
         if (status === 'paid') paid++;
         if (status === 'overdue') overdue++;
     });
-    
+
     // تحديث الأرقام
     document.querySelectorAll('.debt-stat-card.total .stat-number')[0].textContent = total;
     document.querySelectorAll('.debt-stat-card.active .stat-number')[0].textContent = active;
@@ -463,10 +454,10 @@ function formatDate(dateString) {
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    
+
     let icon = 'fa-info-circle';
     let bgColor = 'var(--color-info)';
-    
+
     switch(type) {
         case 'success':
             icon = 'fa-check-circle';
@@ -481,12 +472,12 @@ function showNotification(message, type = 'info') {
             bgColor = 'var(--color-warning)';
             break;
     }
-    
+
     notification.innerHTML = `
         <i class="fas ${icon}"></i>
         <span>${message}</span>
     `;
-    
+
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -505,13 +496,13 @@ function showNotification(message, type = 'info') {
         font-family: 'Cairo', sans-serif;
         font-weight: 600;
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.style.transform = 'translateX(-50%) translateY(0)';
     }, 100);
-    
+
     setTimeout(() => {
         notification.style.transform = 'translateX(-50%) translateY(-100px)';
         setTimeout(() => {
@@ -529,7 +520,7 @@ document.addEventListener('keydown', function(e) {
         e.preventDefault();
         document.getElementById('addDebtBtn').click();
     }
-    
+
     // Ctrl + F = التركيز على البحث
     if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();

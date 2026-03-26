@@ -8,7 +8,7 @@
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📊 Initializing Charts...');
-    
+
     // تفعيل الرسوم البيانية
     initProgressChart();
     initMonthlyChart();
@@ -19,31 +19,21 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 function initProgressChart() {
     const ctx = document.getElementById('progressChart');
-    
-    if (!ctx) {
-        console.error('❌ Progress Chart canvas not found');
-        return;
-    }
-    
-    // البيانات
-    const totalDebt = 26000;
-    const paidAmount = 12340;
-    const remainingAmount = 13660;
-    
-    const progressChart = new Chart(ctx, {
+    if (!ctx) return;
+
+    // البيانات من Laravel
+    const paidAmount      = window.chartData.paid;
+    const remainingAmount = window.chartData.remaining;
+    const totalDebt       = paidAmount + remainingAmount;
+
+    new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['المبلغ المسدد', 'المتبقي للسداد'],
             datasets: [{
                 data: [paidAmount, remainingAmount],
-                backgroundColor: [
-                    '#4CAF50',  // أخضر للمسدد
-                    '#FF9800'   // برتقالي للمتبقي
-                ],
-                borderColor: [
-                    '#4CAF50',
-                    '#FF9800'
-                ],
+                backgroundColor: ['#4CAF50', '#FF9800'],
+                borderColor:     ['#4CAF50', '#FF9800'],
                 borderWidth: 2,
                 hoverOffset: 10
             }]
@@ -51,41 +41,26 @@ function initProgressChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '75%', // حجم الثقب في المنتصف
+            cutout: '75%',
             plugins: {
-                legend: {
-                    display: false // إخفاء الـ legend الافتراضي
-                },
+                legend: { display: false },
                 tooltip: {
-                    enabled: true,
                     rtl: true,
                     backgroundColor: 'rgba(43, 18, 76, 0.95)',
                     titleColor: '#FBE4D8',
                     bodyColor: '#DFB6B2',
-                    borderColor: '#854F6C',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
                     callbacks: {
                         label: function(context) {
-                            const label = context.label || '';
                             const value = context.parsed || 0;
-                            const percentage = ((value / totalDebt) * 100).toFixed(1);
-                            return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                            const pct = totalDebt > 0 ? ((value / totalDebt) * 100).toFixed(1) : 0;
+                            return `${context.label}: ${formatCurrency(value)} (${pct}%)`;
                         }
                     }
                 }
             },
-            animation: {
-                animateRotate: true,
-                animateScale: true,
-                duration: 2000,
-                easing: 'easeInOutQuart'
-            }
+            animation: { duration: 2000, easing: 'easeInOutQuart' }
         }
     });
-    
-    console.log('✅ Progress Chart loaded successfully');
 }
 
 // ============================================
@@ -93,32 +68,26 @@ function initProgressChart() {
 // ============================================
 function initMonthlyChart() {
     const ctx = document.getElementById('monthlyChart');
-    
-    if (!ctx) {
-        console.error('❌ Monthly Chart canvas not found');
-        return;
-    }
-    
-    // البيانات الشهرية
-    const monthlyData = {
-        labels: ['سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير', 'فبراير'],
-        debts: [5000, 6500, 5800, 7200, 6300, 5200],
-        payments: [2000, 3200, 2800, 3500, 3100, 2500]
-    };
-    
-    const monthlyChart = new Chart(ctx, {
+    if (!ctx) return;
+
+    // البيانات من Laravel
+    const labels   = window.chartData.monthly.labels;
+    const debts    = window.chartData.monthly.debts;
+    const payments = window.chartData.monthly.payments;
+
+    window.monthlyChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: monthlyData.labels,
+            labels: labels,
             datasets: [
                 {
                     label: 'الديون الجديدة',
-                    data: monthlyData.debts,
+                    data: debts,
                     borderColor: '#FF9800',
                     backgroundColor: 'rgba(255, 152, 0, 0.1)',
                     borderWidth: 3,
                     fill: true,
-                    tension: 0.4, // منحنى ناعم
+                    tension: 0.4,
                     pointRadius: 5,
                     pointHoverRadius: 7,
                     pointBackgroundColor: '#FF9800',
@@ -127,7 +96,7 @@ function initMonthlyChart() {
                 },
                 {
                     label: 'المبالغ المسددة',
-                    data: monthlyData.payments,
+                    data: payments,
                     borderColor: '#4CAF50',
                     backgroundColor: 'rgba(76, 175, 80, 0.1)',
                     borderWidth: 3,
@@ -144,90 +113,48 @@ function initMonthlyChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
             plugins: {
                 legend: {
                     display: true,
                     position: 'top',
-                    align: 'end',
                     rtl: true,
                     labels: {
                         color: '#DFB6B2',
-                        font: {
-                            family: 'Cairo',
-                            size: 12,
-                            weight: '600'
-                        },
+                        font: { family: 'Cairo', size: 12, weight: '600' },
                         padding: 15,
-                        usePointStyle: true,
-                        pointStyle: 'circle'
+                        usePointStyle: true
                     }
                 },
                 tooltip: {
-                    enabled: true,
                     rtl: true,
                     backgroundColor: 'rgba(43, 18, 76, 0.95)',
                     titleColor: '#FBE4D8',
                     bodyColor: '#DFB6B2',
-                    borderColor: '#854F6C',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
                     callbacks: {
                         label: function(context) {
-                            const label = context.dataset.label || '';
-                            const value = context.parsed.y || 0;
-                            return `${label}: ${formatCurrency(value)}`;
+                            return `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`;
                         }
                     }
                 }
             },
             scales: {
                 x: {
-                    grid: {
-                        color: 'rgba(223, 182, 178, 0.1)',
-                        drawBorder: false
-                    },
-                    ticks: {
-                        color: '#DFB6B2',
-                        font: {
-                            family: 'Cairo',
-                            size: 11
-                        }
-                    }
+                    grid:  { color: 'rgba(223, 182, 178, 0.1)' },
+                    ticks: { color: '#DFB6B2', font: { family: 'Cairo', size: 11 } }
                 },
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: 'rgba(223, 182, 178, 0.1)',
-                        drawBorder: false
-                    },
+                    grid:  { color: 'rgba(223, 182, 178, 0.1)' },
                     ticks: {
                         color: '#DFB6B2',
-                        font: {
-                            family: 'Cairo',
-                            size: 11
-                        },
-                        callback: function(value) {
-                            return formatCurrency(value);
-                        }
+                        font: { family: 'Cairo', size: 11 },
+                        callback: value => formatCurrency(value)
                     }
                 }
             },
-            animation: {
-                duration: 2000,
-                easing: 'easeInOutQuart'
-            }
+            animation: { duration: 2000, easing: 'easeInOutQuart' }
         }
     });
-    
-    console.log('✅ Monthly Chart loaded successfully');
-    
-    // حفظ مرجع للرسم البياني للتحديث لاحقاً
-    window.monthlyChartInstance = monthlyChart;
 }
 
 // ============================================
@@ -250,12 +177,12 @@ function updateMonthlyChart(period) {
         console.error('❌ Chart instance not found');
         return;
     }
-    
+
     const chart = window.monthlyChartInstance;
-    
+
     // بيانات مختلفة حسب الفترة
     let newData;
-    
+
     switch(period) {
         case 'شهر':
             newData = {
@@ -264,7 +191,7 @@ function updateMonthlyChart(period) {
                 payments: [800, 1000, 700, 1000]
             };
             break;
-            
+
         case '3 أشهر':
             newData = {
                 labels: ['ديسمبر', 'يناير', 'فبراير'],
@@ -272,7 +199,7 @@ function updateMonthlyChart(period) {
                 payments: [3500, 3100, 2500]
             };
             break;
-            
+
         case 'سنة':
             newData = {
                 labels: ['مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير', 'فبراير'],
@@ -280,7 +207,7 @@ function updateMonthlyChart(period) {
                 payments: [2500, 2800, 2200, 2600, 3000, 2700, 2000, 3200, 2800, 3500, 3100, 2500]
             };
             break;
-            
+
         default:
             newData = {
                 labels: ['سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير', 'فبراير'],
@@ -288,15 +215,15 @@ function updateMonthlyChart(period) {
                 payments: [2000, 3200, 2800, 3500, 3100, 2500]
             };
     }
-    
+
     // تحديث البيانات
     chart.data.labels = newData.labels;
     chart.data.datasets[0].data = newData.debts;
     chart.data.datasets[1].data = newData.payments;
-    
+
     // تحديث الرسم البياني مع animation
     chart.update('active');
-    
+
     console.log('📊 Chart updated for period:', period);
 }
 
@@ -305,7 +232,7 @@ function updateMonthlyChart(period) {
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     const timeFilterButtons = document.querySelectorAll('.time-filter button');
-    
+
     timeFilterButtons.forEach(button => {
         button.addEventListener('click', function() {
             const period = this.textContent.trim();
@@ -319,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 function createBarChart(canvasId, data) {
     const ctx = document.getElementById(canvasId);
-    
+
     if (!ctx) return;
-    
+
     const barChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -389,7 +316,7 @@ function createBarChart(canvasId, data) {
             }
         }
     });
-    
+
     return barChart;
 }
 
@@ -402,7 +329,7 @@ function createCategoryChart() {
         labels: ['البنك', 'الفواتير', 'القروض', 'المشتريات', 'أخرى'],
         values: [8000, 3500, 6000, 4500, 4000]
     };
-    
+
     // يمكن استدعاء createBarChart هنا
     // createBarChart('categoryChart', categoryData);
 }
@@ -412,21 +339,21 @@ function createCategoryChart() {
 // ============================================
 function exportChartAsImage(chartId, filename) {
     const canvas = document.getElementById(chartId);
-    
+
     if (!canvas) {
         console.error('Canvas not found');
         return;
     }
-    
+
     // تحويل الرسم البياني لصورة
     const url = canvas.toDataURL('image/png');
-    
+
     // إنشاء رابط تحميل
     const link = document.createElement('a');
     link.download = filename || 'chart.png';
     link.href = url;
     link.click();
-    
+
     console.log('📥 Chart exported as image');
 }
 
@@ -435,14 +362,14 @@ function exportChartAsImage(chartId, filename) {
 // ============================================
 function refreshAllCharts() {
     console.log('🔄 Refreshing all charts...');
-    
+
     // إعادة تحميل البيانات من الـ API أو Database
     // ثم تحديث الرسوم البيانية
-    
+
     if (window.monthlyChartInstance) {
         window.monthlyChartInstance.update();
     }
-    
+
     console.log('✅ All charts refreshed');
 }
 
@@ -451,7 +378,7 @@ function refreshAllCharts() {
 // ============================================
 function animateChartsOnScroll() {
     const chartCards = document.querySelectorAll('.chart-card');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -463,7 +390,7 @@ function animateChartsOnScroll() {
     }, {
         threshold: 0.2
     });
-    
+
     chartCards.forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';

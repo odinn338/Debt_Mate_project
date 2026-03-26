@@ -36,7 +36,7 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="{{route('index')}}" class="nav-item ">
+            <a href="{{route('dashboard')}}" class="nav-item ">
                 <i class="fas fa-home"></i>
                 <span>الرئيسية</span>
             </a>
@@ -51,13 +51,20 @@
 
         </nav>
 
-        <a href="{{route('profile')}}" class="user-profile">
-            <div class="user-avatar">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <div  class="user-info">
-                <h4>أحمد محمد</h4>
-                <p>مدير النظام</p>
-            </div>
-        </a>
+        <form method="POST" action="{{ route('logout') }}" style="margin-top: auto;">
+    @csrf
+    <button type="submit" class="nav-item" style="width:100%; border:none; background:none; cursor:pointer; color:inherit;">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>تسجيل الخروج</span>
+    </button>
+</form>
+<a href="{{ route('profile') }}" class="user-profile">
+    <div class="user-avatar">
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <div class="user-info">
+        <h4>{{ auth()->user()->name }}</h4>
+        <p>{{ auth()->user()->role == 'creditor' ? 'دائن' : 'مدين' }}</p>
+    </div>
+</a>
     </aside>

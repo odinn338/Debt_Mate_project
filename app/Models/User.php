@@ -20,6 +20,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'role',
         'password',
     ];
 
@@ -44,5 +46,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function debts()
+    {
+        return $this->hasMany(Debt::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    // هل هو دائن؟
+    public function isCreditor(): bool
+    {
+        return $this->role === 'creditor';
+    }
+
+    // هل هو مدين؟
+    public function isDebtor(): bool
+    {
+        return $this->role === 'debtor';
     }
 }

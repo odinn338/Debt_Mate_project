@@ -28,63 +28,84 @@
             <span id="errorText">حدث خطأ. حاول مرة أخرى</span>
         </div>
 
-        <form id="registerForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName">الاسم الأول</label>
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="firstName" name="firstName" class="form-control"
-                               placeholder="">
-                    </div>
-                </div>
+<form method="POST" action="{{ route('register') }}">
+    @csrf
 
+    @if ($errors->any())
+        <div class="error-message" style="display:block">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ $errors->first() }}</span>
+        </div>
+    @endif
 
+    <div class="form-row">
+        <div class="form-group">
+            <label for="name">الاسم</label>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" name="name"
+                       class="form-control" value="{{ old('name') }}" required>
             </div>
+        </div>
+    </div>
 
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" name="email" class="form-control"
-                           placeholder="example@debtmate.com" required>
-                </div>
+    <div class="form-group">
+        <label for="email">البريد الإلكتروني</label>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email"
+                   class="form-control" value="{{ old('email') }}" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="phone">رقم الهاتف</label>
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="phone" name="phone"
+                   class="form-control" value="{{ old('phone') }}" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="role">نوع الحساب</label>
+        <div class="input-group">
+            <i class="fas fa-user-tag"></i>
+            <select name="role" id="role" class="form-control" required>
+                <option value="">اختر نوع الحساب</option>
+                <option value="creditor" {{ old('role') == 'creditor' ? 'selected' : '' }}>دائن (أنا من يُقرض)</option>
+                <option value="debtor"   {{ old('role') == 'debtor'   ? 'selected' : '' }}>مدين (أنا من يدين)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="password">كلمة المرور</label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" name="password"
+                       class="form-control" required minlength="8">
             </div>
-
-            <div class="form-group">
-                <label for="phone">رقم الهاتف</label>
-                <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="phone" name="phone" class="form-control"
-                           placeholder="+20 123 456 7890" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="password">كلمة المرور</label>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" class="form-control"
-                               placeholder="••••••••" required minlength="8">
-                    </div>
-                </div>
-
-
-            <button type="submit" class="btn-register">
-                <i class="fas fa-user-plus"></i>
-                إنشاء الحساب
-            </button>
-            </div>
-        </form>
-
-        <div class="divider">
-            <span>أو</span>
         </div>
 
-        <div class="login-link">
-            لديك حساب بالفعل؟ <a href="{{route('login')}}">تسجيل الدخول</a>
+        <div class="form-group">
+            <label for="password_confirmation">تأكيد كلمة المرور</label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="form-control" required>
+            </div>
         </div>
+    </div>
+
+    <button type="submit" class="btn-register">
+        <i class="fas fa-user-plus"></i>
+        إنشاء الحساب
+    </button>
+</form>
+
+
     </div>
 
     <script src="{{asset('dashboard')}}/assets/js/register.js"></script>

@@ -704,19 +704,19 @@
     .debts-stats {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .filter-group {
         grid-template-columns: 1fr;
     }
-    
+
     .debts-container.grid-view {
         grid-template-columns: 1fr;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .view-toggle-section {
         flex-direction: column;
         gap: var(--spacing-md);
@@ -727,12 +727,14 @@
     .debts-stats {
         grid-template-columns: 1fr;
     }
-    
+
     .debt-actions {
         flex-direction: column;
     }
-    
+
     .modal-content {
         width: 95%;
     }
 }
+
+
