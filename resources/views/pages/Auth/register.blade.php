@@ -19,7 +19,6 @@
         </div>
 
         <div class="success-message" id="successMessage">
-            <i class="fas fa-check-circle"></i>
             <span>تم إنشاء الحساب بنجاح! جاري تحويلك...</span>
         </div>
 
@@ -33,7 +32,6 @@
 
     @if ($errors->any())
         <div class="error-message" style="display:block">
-            <i class="fas fa-exclamation-circle"></i>
             <span>{{ $errors->first() }}</span>
         </div>
     @endif
@@ -42,7 +40,6 @@
         <div class="form-group">
             <label for="name">الاسم</label>
             <div class="input-group">
-                <i class="fas fa-user"></i>
                 <input type="text" id="name" name="name"
                        class="form-control" value="{{ old('name') }}" required>
             </div>
@@ -52,7 +49,6 @@
     <div class="form-group">
         <label for="email">البريد الإلكتروني</label>
         <div class="input-group">
-            <i class="fas fa-envelope"></i>
             <input type="email" id="email" name="email"
                    class="form-control" value="{{ old('email') }}" required>
         </div>
@@ -61,7 +57,6 @@
     <div class="form-group">
         <label for="phone">رقم الهاتف</label>
         <div class="input-group">
-            <i class="fas fa-phone"></i>
             <input type="tel" id="phone" name="phone"
                    class="form-control" value="{{ old('phone') }}" required>
         </div>
@@ -70,7 +65,6 @@
     <div class="form-group">
         <label for="role">نوع الحساب</label>
         <div class="input-group">
-            <i class="fas fa-user-tag"></i>
             <select name="role" id="role" class="form-control" required>
                 <option value="">اختر نوع الحساب</option>
                 <option value="creditor" {{ old('role') == 'creditor' ? 'selected' : '' }}>دائن (أنا من يُقرض)</option>
@@ -83,7 +77,6 @@
         <div class="form-group">
             <label for="password">كلمة المرور</label>
             <div class="input-group">
-                <i class="fas fa-lock"></i>
                 <input type="password" id="password" name="password"
                        class="form-control" required minlength="8">
             </div>
@@ -92,7 +85,6 @@
         <div class="form-group">
             <label for="password_confirmation">تأكيد كلمة المرور</label>
             <div class="input-group">
-                <i class="fas fa-lock"></i>
                 <input type="password" id="password_confirmation" name="password_confirmation"
                        class="form-control" required>
             </div>
@@ -104,6 +96,14 @@
         إنشاء الحساب
     </button>
 </form>
+        <div class="divider">
+            <span>أو</span>
+        </div>
+
+        <div class="login-link">
+             لديك حساب؟ <a href="{{ route('login') }}">تسجيل الدخول</a>
+        </div>
+    </div>
 
 
     </div>

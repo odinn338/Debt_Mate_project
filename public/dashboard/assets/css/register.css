@@ -14,11 +14,12 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    position: relative;
-    overflow: hidden;
+    /* position: relative; */
+    /* overflow: hidden; */
+
 }
 
-body::before {
+/* body::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -27,7 +28,7 @@ body::before {
     height: 200%;
     background: radial-gradient(circle, rgba(223, 182, 178, 0.05) 0%, transparent 70%);
     animation: rotate 30s linear infinite;
-}
+} */
 
 @keyframes rotate {
     from { transform: rotate(0deg); }

@@ -38,7 +38,6 @@
     <div class="form-group">
         <label for="email">البريد الإلكتروني</label>
         <div class="input-group">
-            <i class="fas fa-envelope"></i>
             <input type="email" id="email" name="email"
                    class="form-control" value="{{ old('email') }}" required>
         </div>
@@ -47,7 +46,6 @@
     <div class="form-group">
         <label for="password">كلمة المرور</label>
         <div class="input-group">
-            <i class="fas fa-lock"></i>
             <input type="password" id="password" name="password"
                    class="form-control" required>
         </div>

@@ -75,4 +75,8 @@
 
 </main>
 
+@section('scripts')
+    <script src="{{asset('dashboard')}}/assets/js/payments.js"></script>
+@endsection
+
 @include('layout.footer')

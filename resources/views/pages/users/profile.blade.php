@@ -184,4 +184,8 @@
 
 </main>
 
+@section('scripts')
+    <script src="{{asset('dashboard')}}/assets/js/profile.js"></script>
+@endsection
+
 @include('layout.footer')

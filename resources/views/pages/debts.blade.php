@@ -202,4 +202,8 @@
     </div>
 </div>
 
+@section('scripts')
+    <script src="{{asset('dashboard')}}/assets/js/debts.js"></script>
+@endsection
+
 @include('layout.footer')
