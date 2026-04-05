@@ -229,7 +229,7 @@
                     </span>
                 </div>
                 @endif
-                <a href="{{ route('debts') }}" class="btn-pay">سداد الآن</a>
+                {{-- <a href="{{ route('debts') }}" class="btn-pay">سداد الآن</a> --}}
             </div>
             @empty
             <div style="text-align:center; padding: 40px; color:#888; grid-column:1/-1">
